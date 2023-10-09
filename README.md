@@ -1,7 +1,3 @@
-Certainly! Below is a sample README file (`README.md`) for your application. You can adapt and use it as a template for your project's README file:
-
----
-
 # Country Code Lookup Service
 
 The Country Code Lookup Service is a simple CLI tool and RESTful API for quickly looking up country codes to expedite the processing of expense reports. It leverages data from an external API and provides functionality to retrieve country names based on country codes.
@@ -145,7 +141,3 @@ Contributions to this project are welcome. To contribute, please follow our [con
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-Please replace `<service-url>` with the actual URL where your service is running. Customize the README file further to provide specific information about your application and setup.
