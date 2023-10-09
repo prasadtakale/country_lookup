@@ -65,20 +65,9 @@ You can use the CLI tool to look up country names, check the health of the servi
 To look up a country name by country code (e.g., 'AU'):
 
 ```bash
-python country_lookup.py lookup --countryCode=AU
+python country_lookup.py --countryCode AU US
 ```
 
-To check the health of the service:
-
-```bash
-python country_lookup.py health
-```
-
-To perform diagnostics on the external API:
-
-```bash
-python country_lookup.py diag
-```
 
 ### REST API Usage
 

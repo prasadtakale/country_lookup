@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from prometheus_client import start_http_server, Summary, Counter, generate_latest, REGISTRY
 import requests
-from country_lookup_api import get_country_codes
 
 app = Flask(__name__)
 
@@ -21,12 +20,17 @@ def lookup():
         if not country_code:
             return jsonify({"error": "Missing 'countryCode' in the request body"}), 400
 
-        print(country_code)
-        country_name = get_country_codes(country_code)
-        if country_name == "Country code not found in local data.":
-            return jsonify({"error": country_name}), 404
+        print
+        country_codes = country_code.split(',')
+        results = {}
+        for country_code in country_codes:
+            api_url = f"https://www.travel-advisory.info/api?countrycode={country_code.strip()}"
+            response = requests.get(api_url)
+            response.raise_for_status()  # Raise an exception for non-2xx status codes
+            advisory_data = response.json()
+            results[country_code] = advisory_data
 
-        return jsonify({"countryName": country_name})
+        return jsonify(results)
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Error fetching data for {country_code}: {str(e)}"}), 500
 
@@ -57,3 +61,4 @@ if __name__ == '__main__':
     # Start Prometheus HTTP server for monitoring on port 8000
     start_http_server(8000)
     app.run(host='0.0.0.0', port=5000)
+
