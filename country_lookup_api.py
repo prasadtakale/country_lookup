@@ -3,6 +3,7 @@ import requests
 import json
 import argparse
 
+
 # Define a function to fetch data from the API for a specific country code
 def fetch_country_data(country_code):
     url = f"https://www.travel-advisory.info/api?countrycode={country_code}"
@@ -23,7 +24,7 @@ def load_data_from_file():
         return None
 
 # Updated lookup function to use local data and update if needed
-def lookup_country(country_code):
+def lookup_country(country_code):  
     data = load_data_from_file()
 
     if data is not None:
@@ -46,13 +47,14 @@ def lookup_country(country_code):
     else:
         return "Country code not found even after updating data."
 
-if __name__ == "__main__":
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Country Code Lookup Tool")
-    parser.add_argument("--countryCodes", nargs="+", help="List of country codes to look up", required=True)
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     # Parse command-line arguments
+#     parser = argparse.ArgumentParser(description="Country Code Lookup Tool")
+#     parser.add_argument("--countryCodes", nargs="+", help="List of country codes to look up", required=True)
+#     args = parser.parse_args()
 
+def get_country_codes(country_codes):
     # Lookup and display country names for provided country codes
-    for country_code in args.countryCodes:
+    for country_code in country_codes.split(","):
         country_name = lookup_country(country_code)
         print(f"Country Code: {country_code} => Country Name: {country_name}")

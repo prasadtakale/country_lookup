@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify
-from prometheus_client import start_http_server, Summary
+from prometheus_client import start_http_server, Summary, Counter, generate_latest, REGISTRY
 import requests
+from country_lookup_api import get_country_codes
 
 app = Flask(__name__)
 
 # Define a Prometheus summary metric for API request duration
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+
+# Define a Prometheus counter metric for API requests
+API_REQUESTS = Counter('api_requests_total', 'Total API requests')
 
 # Function to fetch travel advisory data for a given country code
 @app.route('/lookup', methods=['POST'])
@@ -17,15 +21,19 @@ def lookup():
         if not country_code:
             return jsonify({"error": "Missing 'countryCode' in the request body"}), 400
 
-        api_url = f"https://www.travel-advisory.info/api?countrycode={country_code}"
+        print(country_code)
+        country_name = get_country_codes(country_code)
+        if country_name == "Country code not found in local data.":
+            return jsonify({"error": country_name}), 404
 
-        response = requests.get(api_url)
-        response.raise_for_status()  # Raise an exception for non-2xx status codes
-        advisory_data = response.json()
-        return jsonify(advisory_data)
+        return jsonify({"countryName": country_name})
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Error fetching data for {country_code}: {str(e)}"}), 500
 
+# Prometheus metrics endpoint
+@app.route('/metrics')
+def metrics():
+    return generate_latest()
 
 # Health check route
 @app.route('/health')
